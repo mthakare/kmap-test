@@ -7,7 +7,6 @@ public class Condition implements ICondition {
 	public SimpleEntry<SimpleEntry<Boolean, String>, boolean[]> evaluate(boolean... conditions) {
 
 		if (conditions[0] || conditions[1]) {
-			// ##### WRONG A'D + B'C + B'DF + BD'F + ACD' + BC'DE' ####//
 
 			// y = [A'B' + ] AC + BD'F + BDE'
 			if ((conditions[0] && conditions[2]) || (conditions[1] && !conditions[3] && conditions[5])
@@ -15,30 +14,28 @@ public class Condition implements ICondition {
 
 				// Failure Conditions
 
-				// Case 1 : Application terminated unexpectedly -> BD'F + ACD'F / with dont
-				// cares y = B'C + BD'F
+				// Case 1 : error-1 -> BD'F + ACD'F 
 				if ((conditions[1] && !conditions[3] && conditions[5])
 						|| (conditions[0] && conditions[2] && !conditions[3] && conditions[5])) {
 
 					return new SimpleEntry<SimpleEntry<Boolean, String>, boolean[]>(
-							new SimpleEntry<Boolean, String>(true, "FAILURE_APP_TERMINATED_UNEXPECTEDLY"), conditions);
+							new SimpleEntry<Boolean, String>(true, "error-1"), conditions);
 				}
 
-				// Case 2 PID not set -> y = A'BDE' + BC'DE' / wiht dont cares y = BDE'
+				// Case 2 : error-2 -> y = A'BDE' + BC'DE' 
 				if ((!conditions[0] && conditions[1] && conditions[3] && !conditions[4])
 						|| (conditions[1] && !conditions[2] && conditions[3] && !conditions[4])) {
 
 					return new SimpleEntry<SimpleEntry<Boolean, String>, boolean[]>(
-							new SimpleEntry<Boolean, String>(true, "FAILURE_PID"), conditions);
+							new SimpleEntry<Boolean, String>(true, "error-2"), conditions);
 				}
 
-				// Case 3 Event Service Read Failure -> y = ACF' + ACD / with dont cares : y =
-				// AC
+				// Case 3 : error-3 -> y = ACF' + ACD 
 				if ((conditions[0] && conditions[2] && !conditions[5])
 						|| (conditions[0] && conditions[2] && conditions[3])) {
 
 					return new SimpleEntry<SimpleEntry<Boolean, String>, boolean[]>(
-							new SimpleEntry<Boolean, String>(true, "FAILURE_EVENTSERVICE"), conditions);
+							new SimpleEntry<Boolean, String>(true, "error-3"), conditions);
 				}
 			} else {
 				return new SimpleEntry<SimpleEntry<Boolean, String>, boolean[]>(
@@ -50,6 +47,7 @@ public class Condition implements ICondition {
 					new SimpleEntry<Boolean, String>(true, "INVAL"), conditions);
 		}
 
+		// Should not be here
 		return new SimpleEntry<SimpleEntry<Boolean, String>, boolean[]>(
 				new SimpleEntry<Boolean, String>(true, "INVAL**"), conditions);
 
