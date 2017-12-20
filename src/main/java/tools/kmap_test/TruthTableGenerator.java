@@ -9,15 +9,18 @@ import java.util.List;
 public class TruthTableGenerator {
 	
 	int curr = 0;
+	int kmap_variable = 0;
 
 	public static void main (String [] args)
 	{
 	
-		TruthTableGenerator t = new TruthTableGenerator();
+		TruthTableGenerator t = new TruthTableGenerator(6);
 		
+		// A condition object containing code block that is refactored using kmaps.
 		ICondition newCondition = new Condition();
 		t.printTruthTable(newCondition);
 		
+		// A condition object containing code block that needs to be refactored.
 		ICondition oldCondition = new OldCondition();
 		t.printTruthTable(oldCondition);
 		
@@ -33,24 +36,34 @@ public class TruthTableGenerator {
 		
 		
 	}
+	
+	public TruthTableGenerator(int variable) {
+		kmap_variable = variable;
+	}
 
 	public boolean[][] generateTTInput(int variableCount) {
-		int n = 6;
-		boolean conditionsList[][] = new boolean[1<<n][n];
-		for (int i = 0 ; i != (1<<n) ; i++) {
+		
+		boolean conditionsList[][] = new boolean[1<<kmap_variable][kmap_variable];
+		for (int i = 0 ; i != (1<<kmap_variable) ; i++) {
 		    String s = Integer.toBinaryString(i);
 
-		    while (s.length() != n) {
+		    while (s.length() != kmap_variable) {
 		        s = '0'+s;
 		    }
 		    
-		    for (int j = 0; j < n; ++ j) {
+		    for (int j = 0; j < kmap_variable; ++ j) {
 		    	conditionsList[i][j] = (s.charAt(j) == '1');
 		    }
 		}
 		return conditionsList;
 	}
 	
+	/**
+	 * Evaluates conditions and performs comparison. If they are not equal, it returns list of input combinations that are different. 
+	 * @param newCondition
+	 * @param oldCondition
+	 * @return
+	 */
 	public SimpleEntry<Boolean, List<SimpleEntry<Integer, boolean[]>>> compare(ICondition newCondition, ICondition oldCondition) {
 		
 		List<SimpleEntry<Integer, boolean[]>> dissimilarCondtions = new ArrayList<SimpleEntry<Integer, boolean[]>>();
@@ -68,16 +81,20 @@ public class TruthTableGenerator {
 		return new SimpleEntry<Boolean,List<SimpleEntry<Integer, boolean[]>>>(isSame, dissimilarCondtions);
 	}
 
-
+	/**
+	 *	Prints truth table evaluating all conditions with all possible 2^kmap_variable combination.
+	 * 	@param ICondition
+	 */
 	public void printTruthTable(ICondition c) {
-		TruthTableGenerator t = new TruthTableGenerator();
+		
 		
 		System.out.println("--------------- Truth table for " + c.getName() + "---------------");
 		boolean[][] conditionsList= generateTTInput(6);
+		curr = 0;
 		for (int i = 0; i < conditionsList.length; ++i) {
-			t.print(c.evaluate(conditionsList[i]));
+			print(c.evaluate(conditionsList[i]));
 		}
-		System.out.println("--------------- ---------------  ---------------");
+		System.out.println("--------------- ---------------  --------------- ---------------");
 	}
 
 
