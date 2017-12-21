@@ -1,6 +1,6 @@
 Requirements
 
-	jre 1.8.0 and above.
+	jre 1.4.0.
 
 	maven 3.3
 
